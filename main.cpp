@@ -12,20 +12,20 @@ void duplication_check(std::vector<std::string> controls_vector)
     bool wasUnique = (it == controls_vector.end());
     if (wasUnique == 1)
     {
-        std::cout << "[+] No duplicate controls discovered;" << "\n";
+        std::cout << "|-> [+] No duplicate controls discovered;" << "\n";
     }
     else
     {
-        std::cout << "[-] Duplicate controls discovered;" << "\n";
+        std::cout << "|-> [-] Duplicate controls discovered;" << "\n";
     }
 }
 
-int test()
+int control_sorter()
 {
     std::vector<std::string> controls_vector;
     std::string constructed_text;
     std::string user_input;
-    std::cout << "Enter text: (Type 'qqqq' to enter text | Type 'exit' to exit program safely;" << "\n";
+    std::cout << "Enter/Paste text: (Type 'qqqq' and press enter to process text | Type 'exit' and press enter to exit program safely);" << "\n";
     while (std::getline(std::cin, user_input))
     {
         /*
@@ -49,7 +49,7 @@ int test()
     // TODO: Break when 4 digit numbers are not located in string.
     if (constructed_text.find_first_of("0123456789") == std::string::npos)
     {
-        std::cout << "[-] No 4 digit number found in following text. Please try again:" << "\n";
+        std::cout << "[-] No 4 digit number found in following text. Please try again." << "\n";
         std::cout << "[!] END" << "\n";
         std::cout << "[!] Exiting..." << "\n\n";
         return 0;
@@ -66,9 +66,13 @@ int test()
         }
     }
     std::ofstream output_file;
-    //if (std::filesystem::exists("bookmark_record.csv") == false)
-    output_file.open("RISK.csv", std::ios::app);
-    std::cout << "[+] Opened RISK.csv successfully;" << "\n";
+    if (std::filesystem::exists("sorted_controls.csv") == false)
+    {
+        std::cout << "[!] Unable to locate 'sorted_controls.csv'. Creating new csv file;" << "\n";
+        std::cout << "[+] Created at: " << std::filesystem::current_path() << "\n";
+    }
+    output_file.open("sorted_controls.csv", std::ios::app);
+    std::cout << "[+] Opened sorted_controls.csv successfully;" << "\n\n";
     // Comma used as seperator in csv files.
     std::cout << "Result: " << "\n";
     for (int i = 0; i <= controls_vector.size() - 1; i++)
@@ -91,17 +95,27 @@ int test()
     output_file << "\n\n";
     output_file.close();
     std::cout << "\n\n";
+    std::cout << "============================= Additional Info =============================" << "\n";
+    std::cout << "Number of control(s) counted: " << controls_vector.size() << "\n";
     duplication_check(controls_vector);
+    std::cout << "===========================================================================" << "\n";
     std::cout << "\n";
     return 0;
 }
 
 int main()
 {
+    std::cout << "=======================================" << "\n";
+    std::cout << "- Risk_Treatment_Controls_Distinguisher console application" << "\n";
+    std::cout << "- Console Application Version: 1.0" << "\n";
+    std::cout << "- Created By: Anthony N." << "\n";
+    std::cout << "- Current location of executable: " << std::filesystem::current_path() << "\n";
+    std::cout << "=======================================" << "\n\n";
+
     int flag = 0;
     while (flag == 0)
     {
-        flag = test();
+        flag = control_sorter();
     }
     std::cout << "[!] END" << "\n";
     std::cout << "[!] Exiting..." << "\n\n";
