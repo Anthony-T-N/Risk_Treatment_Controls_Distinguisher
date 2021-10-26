@@ -49,12 +49,13 @@ int control_sorter()
     // TODO: Break when 4 digit numbers are not located in string.
     if (constructed_text.find_first_of("0123456789") == std::string::npos)
     {
-        std::cout << "[-] No 4 digit number found in following text. Please try again." << "\n";
+        std::cout << "[-] No number(s) found in following text. Please try again." << "\n";
         std::cout << "[!] END" << "\n";
         std::cout << "[!] Exiting..." << "\n\n";
         return 0;
     }
     std::string temp_store;
+    bool digit_set_found = false;
     for (int i = 0; i <= constructed_text.length() - 1; i++)
     {
         if (isdigit(constructed_text[i]) && isdigit(constructed_text[i + 1]) && isdigit(constructed_text[i + 2]) && isdigit(constructed_text[i + 3]))
@@ -63,8 +64,18 @@ int control_sorter()
             //std::cout << temp_store << "\n";
             controls_vector.push_back(temp_store);
             i = i + 4;
+            digit_set_found = true;
         }
     }
+    if (digit_set_found == false)
+    {
+        std::cout << "[-] No 4 digit number found in following text. Please try again." << "\n";
+        std::cout << "[!] END" << "\n";
+        std::cout << "[!] Exiting..." << "\n\n";
+        return 0;
+    }
+    //std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+    //printf("\033c");
     std::ofstream output_file;
     if (std::filesystem::exists("sorted_controls.csv") == false)
     {
@@ -119,6 +130,7 @@ int main()
     }
     std::cout << "[!] END" << "\n";
     std::cout << "[!] Exiting..." << "\n\n";
-    system("pause");
+    std::cout << "Press enter to continue . . ." << "\n";
+    std::cin.get();
     return 0;
 }
