@@ -79,7 +79,6 @@ int control_sorter()
         if (isdigit(constructed_text[i]) && isdigit(constructed_text[i + 1]) && isdigit(constructed_text[i + 2]) && isdigit(constructed_text[i + 3]))
         {
             temp_store = constructed_text.substr(i, 4);
-            //std::cout << temp_store << "\n";
             controls_vector.push_back(temp_store);
             i = i + 4;
             digit_set_found = true;
@@ -92,8 +91,6 @@ int control_sorter()
         std::cout << "[!] Exiting..." << "\n\n";
         return 0;
     }
-    //std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-    //printf("\033c");
     std::ofstream output_file;
     if (std::filesystem::exists("sorted_controls.csv") == false)
     {
@@ -176,10 +173,16 @@ int mod_control_sorter(std::vector<std::string> vul_ID_vector)
         constructed_text += user_input;
     }
     std::cout << "\n";
-    // TODO: Break when 4 digit numbers are not located in string.
     if (constructed_text.find_first_of("0123456789") == std::string::npos)
     {
         std::cout << "[-] No number(s) found in following text. Please try again." << "\n";
+        std::cout << "[!] END" << "\n";
+        std::cout << "[!] Exiting..." << "\n\n";
+        return 0;
+    }
+    else if (constructed_text.find_first_of('!') == std::string::npos)
+    {
+        std::cout << "[-] No '!' found in the followng text. Please try again." << "\n";
         std::cout << "[!] END" << "\n";
         std::cout << "[!] Exiting..." << "\n\n";
         return 0;
@@ -192,7 +195,6 @@ int mod_control_sorter(std::vector<std::string> vul_ID_vector)
         if (isdigit(constructed_text[i]) && isdigit(constructed_text[i + 1]) && isdigit(constructed_text[i + 2]) && isdigit(constructed_text[i + 3]))
         {
             temp_store = constructed_text.substr(i, 4);
-            //std::cout << temp_store << "\n";
             short_term_controls_vector.push_back(temp_store);
             i = i + 4;
             digit_set_found = true;
@@ -256,20 +258,18 @@ int mod_control_sorter(std::vector<std::string> vul_ID_vector)
                     output_file << controls_vector[i][j];
                 }
             }
+            std::cout << "\n\n";
+            std::cout << "============================= Additional Info =============================" << "\n";
+            std::cout << "Number of control(s) counted: " << controls_vector[i].size() << "\n";
+            duplication_check(controls_vector[i]);
+            std::cout << "===========================================================================" << "\n";
+            std::cout << "\n";
         }
         std::cout << "\n\n";
         output_file << "\n\n";
     }
     output_file << "\n\n";
     output_file.close();
-    /*
-    std::cout << "\n\n";
-    std::cout << "============================= Additional Info =============================" << "\n";
-    std::cout << "Number of control(s) counted: " << controls_vector.size() << "\n";
-    duplication_check(controls_vector);
-    std::cout << "===========================================================================" << "\n";
-    std::cout << "\n";
-    */
     return 0;
 }
 
@@ -347,7 +347,7 @@ int main()
 {
     std::cout << "=======================================" << "\n";
     std::cout << "- Risk_Treatment_Controls_Distinguisher console application" << "\n";
-    std::cout << "- Console Application Version: 1.0" << "\n";
+    std::cout << "- Console Application Version: 2.0" << "\n";
     std::cout << "- Created By: Anthony N." << "\n";
     std::cout << "- Current location of executable: " << std::filesystem::current_path() << "\n";
     std::cout << "=======================================" << "\n\n";
@@ -370,9 +370,7 @@ int main()
     }
     else if (user_input == "1")
     {
-
         mass_vul();
-
     }
     std::cout << "[!] END" << "\n";
     std::cout << "[!] Exiting..." << "\n\n";
