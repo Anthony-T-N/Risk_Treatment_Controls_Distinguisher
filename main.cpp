@@ -352,25 +352,33 @@ int main()
     std::cout << "- Current location of executable: " << std::filesystem::current_path() << "\n";
     std::cout << "=======================================" << "\n\n";
 
-    std::cout << "Select an option:" << "\n";
-    std::cout << "[0] Control_sorter" << "\n";
-    std::cout << "[1] Controls & Vulnerability association" << "\n";
-    std::cout << "Selection ?:" << "\n";
-    std::cout << "> ";
-    std::string user_input;
-    std::getline(std::cin, user_input);
-    std::cout << "\n";
-    if (user_input == "0")
+    while (true)
     {
-        int flag = 0;
-        while (flag == 0)
+        std::cout << "Select an option:" << "\n";
+        std::cout << "[0] Control_sorter" << "\n";
+        std::cout << "[1] Controls & Vulnerability association" << "\n";
+        std::cout << "[exit] Exit" << "\n";
+        std::cout << "Selection ?:" << "\n";
+        std::cout << "> ";
+        std::string user_input;
+        std::getline(std::cin, user_input);
+        std::cout << "\n";
+        if (user_input == "0")
         {
-            flag = control_sorter();
+            int flag = 0;
+            while (flag == 0)
+            {
+                flag = control_sorter();
+            }
         }
-    }
-    else if (user_input == "1")
-    {
-        mass_vul();
+        else if (user_input == "1")
+        {
+            mass_vul();
+        }
+        else if (user_input == "exit")
+        {
+            break;
+        }
     }
     std::cout << "[!] END" << "\n";
     std::cout << "[!] Exiting..." << "\n\n";
