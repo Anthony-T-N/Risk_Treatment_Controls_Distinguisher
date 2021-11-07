@@ -298,7 +298,7 @@ int mass_vul()
     std::string temp_str_store;
     bool digit_set_found = false;
     bool char_v_found = false;
-    int temp_pos_store = 0;
+    int starting_v_pos = 0;
     // {INFO} Identify VXXX_XXXXXXXX_01
     for (int i = 0; i <= constructed_text.length() - 1; i++)
     {
@@ -308,27 +308,25 @@ int mass_vul()
         {
             // https://stackoverflow.com/questions/14544043/operand-types-are-incompatible-char-and-const-char/14544047
             // {INFO} Detect character "v".
-            std::cout << "[!] V found" << "\n";
+            std::cout << "[!] Letter 'V' found" << "\n";
             char_v_found = true;
-            temp_pos_store = i;
+            starting_v_pos = i;
         }
         else if (isdigit(constructed_text[i]) && char_v_found == true)
         {
-            std::cout << "[!] Digit found" << "\n";
+            // {INFO} After locating the char "V". Identify the next digital in string.
+            std::cout << "[!] Number found" << "\n";
             int j = 0;
             while (isdigit(constructed_text[i + j]))
             {
                 j += 1;
                 std::cout << constructed_text[i + j] << "+";
             }
-            int temp = i + j;
-            temp = (i + j) - temp_pos_store;
-            std::cout << "[!]" << temp << "\n";
-            temp_str_store = constructed_text.substr(temp_pos_store, temp);
-            std::cout << "\n";
-            std::cout << "Storing: " << temp_str_store << "\n";
+            temp_str_store = constructed_text.substr(starting_v_pos, (i + j) - starting_v_pos);
+            std::cout << "Storing: " << temp_str_store << "\n\n";
             vul_ID_vector.push_back(temp_str_store);
             char_v_found = false;
+            // Once the end of the vul ID has been reached. Skip iteration(s) to prevent for loop from looping through the same numbers/characters again.
             i = (i + j) - 1;
         }
     }
