@@ -189,6 +189,7 @@ int mod_control_sorter(std::vector<std::string> vul_ID_vector)
     }
     std::string temp_store;
     bool digit_set_found = false;
+    bool exclamation_mark_found = false;
     std::vector<std::string> short_term_controls_vector;
     for (int i = 0; i <= constructed_text.length() - 1; i++)
     {
@@ -201,6 +202,7 @@ int mod_control_sorter(std::vector<std::string> vul_ID_vector)
         }
         if (constructed_text[i] == '!')
         {
+            exclamation_mark_found = true;
             controls_vector.push_back(short_term_controls_vector);
             short_term_controls_vector.clear();
         }
@@ -208,6 +210,13 @@ int mod_control_sorter(std::vector<std::string> vul_ID_vector)
     if (digit_set_found == false)
     {
         std::cout << "[-] No 4 digit number found in following text. Please try again." << "\n";
+        std::cout << "[!] END" << "\n";
+        std::cout << "[!] Exiting..." << "\n\n";
+        return 0;
+    }
+    if (exclamation_mark_found == false)
+    {
+        std::cout << "[-] Exclamation mark not found. Please try again." << "\n";
         std::cout << "[!] END" << "\n";
         std::cout << "[!] Exiting..." << "\n\n";
         return 0;
@@ -225,12 +234,16 @@ int mod_control_sorter(std::vector<std::string> vul_ID_vector)
     }
     output_file.open("vul_sorted_controls.csv", std::ios::app);
     std::cout << "[+] Opened vul_sorted_controls.csv successfully;" << "\n\n";
-    // Comma used as seperator in csv files.
+    
+    // EXCEL DETAILS:
+    int excel_row = 3;
+    
     std::cout << "[!] Result: " << "\n";
     std::cout << print_time() << "\n\n";
     output_file << print_time() << "\n\n";
     for (int i = 0; i <= controls_vector.size() - 1; i++)
     {
+        // Comma used as seperator in csv files.
         if (controls_vector[i].empty())
         {
             std::cout << vul_ID_vector[i] << ",";
@@ -265,8 +278,11 @@ int mod_control_sorter(std::vector<std::string> vul_ID_vector)
             std::cout << "===========================================================================" << "\n";
             std::cout << "\n";
         }
-        std::cout << "\n\n";
+        // Increase excel row by 4.
+        output_file << "\n";
+        output_file << ",=TEXT(B" << excel_row << "#\"0000\")" << "\n";
         output_file << "\n\n";
+        excel_row += 4;
     }
     output_file << "\n\n";
     output_file.close();
@@ -337,6 +353,8 @@ int mass_vul()
     }
     std::cout << "\n";
     std::cout << "STAGE 2: Associating controls with vul IDs " << "\n";
+    std::cout << "Ensure controls/text in the same row as vul IDs contain an \"!\" at the end" << "\n";
+    std::cout << "EXAMPLE: =XX&\"!\"" << "\n";
     mod_control_sorter(vul_ID_vector);
     return 0;
 }
