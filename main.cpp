@@ -4,6 +4,9 @@
 #include <string>
 #include <fstream>
 
+// TEMP FOR SLEEP
+#include <windows.h>
+
 // https://stackoverflow.com/questions/21873048/getting-an-error-fopen-this-function-or-variable-may-be-unsafe-when-complin/21873153
 #pragma warning(disable:4996);
 
@@ -280,9 +283,16 @@ int mod_control_sorter(std::vector<std::string> vul_ID_vector)
         }
         // Increase excel row by 4.
         output_file << "\n";
-        output_file << ",=TEXT(B" << excel_row << "#\"0000\")" << "\n";
+        std::string test;
+        for (int k = 0; k < controls_vector[i].size(); k++)
+        {
+            //std::cout << test << "\n";
+            test.append(",=TEXT(B" + std::to_string(excel_row) + "#\"0000\")");
+            //output_file << ",=TEXT(B" << excel_row << "#\"0000\"),";
+        }
+        output_file << test;
         output_file << "\n\n";
-        excel_row += 4;
+        excel_row += 3;
     }
     output_file << "\n\n";
     output_file.close();
