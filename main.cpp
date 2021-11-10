@@ -283,14 +283,34 @@ int mod_control_sorter(std::vector<std::string> vul_ID_vector)
         }
         // Increase excel row by 4.
         output_file << "\n";
-        std::string test;
+        std::string complete_excel_formula;
+        std::string alphabet = "abcdefghijklmnopqrstuvwxyz$";
+        int col_increment = 1;
+        int col_increment_iteration = -1;
+        bool double_col_address = false;
+        std::string full_col_address;
         for (int k = 0; k < controls_vector[i].size(); k++)
         {
-            //std::cout << test << "\n";
-            test.append(",=TEXT(B" + std::to_string(excel_row) + "#\"0000\")");
+            if (alphabet[col_increment] == '$')
+            {
+                col_increment = 0;
+                col_increment_iteration++;
+                double_col_address = true;
+            }
+            if (double_col_address == true)
+            {
+                full_col_address = alphabet[col_increment_iteration];
+                full_col_address += alphabet[col_increment];
+            }
+            else
+            {
+                full_col_address = alphabet[col_increment];
+            }
+            complete_excel_formula.append(",=TEXT(" + full_col_address + std::to_string(excel_row) + "#\"0000\")");
             //output_file << ",=TEXT(B" << excel_row << "#\"0000\"),";
+            col_increment++;
         }
-        output_file << test;
+        output_file << complete_excel_formula;
         output_file << "\n\n";
         excel_row += 3;
     }
