@@ -25,10 +25,11 @@ std::string print_time()
 
 }
 
-void duplication_check(std::vector<std::string> controls_vector)
+std::vector<std::string> duplication_check(std::vector<std::string> controls_vector)
 {
     std::cout << "[!] Performing duplication check of current vector;" << "\n";
     std::sort(controls_vector.begin(), controls_vector.end());
+    controls_vector.erase(std::unique(controls_vector.begin(), controls_vector.end()), controls_vector.end());
     auto it = std::unique(controls_vector.begin(), controls_vector.end());
     bool wasUnique = (it == controls_vector.end());
     if (wasUnique == 1)
@@ -38,7 +39,10 @@ void duplication_check(std::vector<std::string> controls_vector)
     else
     {
         std::cout << "|-> [-] Duplicate controls discovered;" << "\n";
+        std::cout << "    |-> [+] Removing duplicate controls;" << "\n";
+        controls_vector.erase(std::unique(controls_vector.begin(), controls_vector.end()), controls_vector.end());
     }
+    return controls_vector;
 }
 
 int control_sorter()
@@ -237,15 +241,24 @@ int mod_control_sorter(std::vector<std::string> vul_ID_vector)
     }
     output_file.open("vul_sorted_controls.csv", std::ios::app);
     std::cout << "[+] Opened vul_sorted_controls.csv successfully;" << "\n\n";
-    
+
     // EXCEL DETAILS:
     int excel_row = 3;
-    
+
     std::cout << "[!] Result: " << "\n";
     std::cout << print_time() << "\n\n";
     output_file << print_time() << "\n\n";
     for (int i = 0; i <= controls_vector.size() - 1; i++)
     {
+        std::cout << "\n\n";
+        std::cout << "============================= Additional Info =============================" << "\n";
+        std::cout << "Number of control(s) counted: " << controls_vector[i].size() << "\n";
+        controls_vector[i] = duplication_check(controls_vector[i]);
+        std::cout << "ROUND 2: Number of control(s) counted: " << controls_vector[i].size() << "\n";
+        std::cout << "Performing 2nd duplication check" << "\n";
+        controls_vector[i] = duplication_check(controls_vector[i]);
+        std::cout << "===========================================================================" << "\n";
+        std::cout << "\n";
         // Comma used as seperator in csv files.
         if (controls_vector[i].empty())
         {
@@ -254,7 +267,7 @@ int mod_control_sorter(std::vector<std::string> vul_ID_vector)
             std::cout << "EMPTY";
             output_file << "EMTPY";
         }
-        else 
+        else
         {
             for (int j = 0; j <= controls_vector[i].size() - 1; j++)
             {
@@ -274,43 +287,49 @@ int mod_control_sorter(std::vector<std::string> vul_ID_vector)
                     output_file << controls_vector[i][j];
                 }
             }
+            /* Originally placed here. However, requirement to remove duplicates beforehand.
             std::cout << "\n\n";
             std::cout << "============================= Additional Info =============================" << "\n";
             std::cout << "Number of control(s) counted: " << controls_vector[i].size() << "\n";
             duplication_check(controls_vector[i]);
             std::cout << "===========================================================================" << "\n";
             std::cout << "\n";
+            */
+            std::cout << "\n";
         }
         // Increase excel row by 4.
         output_file << "\n";
-        std::string complete_excel_formula;
-        std::string alphabet = "abcdefghijklmnopqrstuvwxyz$";
-        int col_increment = 1;
-        int col_increment_iteration = -1;
-        bool double_col_address = false;
-        std::string full_col_address;
+        std::string test;
+        std::vector<std::string> alphabet({ "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","@"});
+        int alphabet_increment = 1;
+        int alphabet_increment_second = -1;
+        bool second_iteration = false;
+        std::string cell_letter;
         for (int k = 0; k < controls_vector[i].size(); k++)
         {
-            if (alphabet[col_increment] == '$')
+            if (alphabet[alphabet_increment] == "@")
             {
-                col_increment = 0;
-                col_increment_iteration++;
-                double_col_address = true;
+                alphabet_increment = 0;
+                second_iteration = true;
+                alphabet_increment_second++;
             }
-            if (double_col_address == true)
+            if (second_iteration == true)
             {
-                full_col_address = alphabet[col_increment_iteration];
-                full_col_address += alphabet[col_increment];
+                cell_letter = alphabet[alphabet_increment_second];
+                cell_letter.append(alphabet[alphabet_increment]);
             }
             else
             {
-                full_col_address = alphabet[col_increment];
+                cell_letter = alphabet[alphabet_increment];
             }
-            complete_excel_formula.append(",=TEXT(" + full_col_address + std::to_string(excel_row) + "#\"0000\")");
+            //std::cout << test << "\n";
+            // Commented out because program kept printing out a column of letters.
+            //std::cout << alphabet[alphabet_increment] << "\n";
+            test.append(",=TEXT(" + cell_letter + std::to_string(excel_row) + "#\"0000\")");
             //output_file << ",=TEXT(B" << excel_row << "#\"0000\"),";
-            col_increment++;
+            alphabet_increment++;
         }
-        output_file << complete_excel_formula;
+        output_file << test;
         output_file << "\n\n";
         excel_row += 3;
     }
@@ -393,7 +412,7 @@ int main()
 {
     std::cout << "=======================================" << "\n";
     std::cout << "- Risk_Treatment_Controls_Distinguisher console application" << "\n";
-    std::cout << "- Console Application Version: 2.0" << "\n";
+    std::cout << "- Console Application Version: 3.5" << "\n";
     std::cout << "- Created By: Anthony N." << "\n";
     std::cout << "- Current location of executable: " << std::filesystem::current_path() << "\n";
     std::cout << "=======================================" << "\n\n";
@@ -411,6 +430,7 @@ int main()
         std::cout << "\n";
         if (user_input == "0")
         {
+            std::cout << "WARNING: DOES NOT PERFORM DUPLICATION REMOVAL" << "\n";
             int flag = 0;
             while (flag == 0)
             {
